@@ -1,0 +1,73 @@
+pl/add.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Host - I2P Jump Server</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Add Host to Jump Server</h1>
+    </header>
+
+    <main>
+        <section id="rules">
+            <h2>Rules for Adding Hosts</h2>
+            <ul>
+                <li>The hostname must be unique and not already registered</li>
+                <li>The I2P destination must be valid and reachable</li>
+                <li>The service must be actively running and maintained</li>
+                <li>No illegal or harmful content is allowed</li>
+                <li>Hostnames must be appropriate and not misleading</li>
+            </ul>
+        </section>
+
+        <section id="add-form">
+            <h2>Add New Host</h2>
+            <form method="POST" action="/add">
+                <div class="form-group">
+                    <label for="hostname">Hostname:</label>
+                    <input type="text" id="hostname" name="hostname" required 
+                           pattern="[a-zA-Z0-9.-]+" 
+                           title="Only letters, numbers, dots and hyphens allowed">
+                </div>
+
+                <div class="form-group">
+                    <label for="destination">I2P Destination (Base32 or Base64):</label>
+                    <textarea id="destination" name="destination" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Type:</label>
+                    <select id="type" name="type" required>
+                        <option value="service">Service</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Registrant Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tags">Tags (comma separated):</label>
+                    <input type="text" id="tags" name="tags" 
+                           placeholder="e.g. blog, forum, social">
+                </div>
+
+                <button type="submit">Add Host</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

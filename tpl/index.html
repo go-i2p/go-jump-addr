@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I2P Jump Server</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>I2P Jump Server</h1>
+    </header>
+
+    <main>
+        <section id="index-content">
+            {{if .Index}}
+                {{.Index}}
+            {{else}}
+                <p>Welcome to the I2P Jump Server. This service helps you discover and navigate I2P services.</p>
+            {{end}}
+        </section>
+
+        <section id="hostname-list">
+            <h2>Registered Hostnames</h2>
+            {{if .Hostnames}}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hostname</th>
+                            <th>Base32 Address</th>
+                            <th>Type</th>
+                            <th>Registrant</th>
+                            <th>Description</th>
+                            <th>Tags</th>
+                            <th>Added</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Hostnames}}
+                        <tr>
+                            <td>{{.Hostname}}</td>
+                            <td>{{.I2PAddr.Base32}}</td>
+                            <td>{{.Registrant.Type}}</td>
+                            <td>{{.Registrant.Name}}</td>
+                            <td>{{.Registrant.Description}}</td>
+                            <td>
+                                {{range .Registrant.Tags}}
+                                <span class="tag">{{.}}</span>
+                                {{end}}
+                            </td>
+                            <td>{{.Time.Format "2006-01-02"}}</td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            {{else}}
+                <p>No hostnames registered yet.</p>
+            {{end}}
+        </section>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
