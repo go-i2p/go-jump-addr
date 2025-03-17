@@ -1,7 +1,14 @@
 package jumpserver
 
+import (
+	gohtmlmetadata "github.com/go-i2p/go-html-metadata"
+	"github.com/go-i2p/onramp"
+)
+
 type JumpServer struct {
+	*gohtmlmetadata.Extractor
 	Hostnames []*Hostname `json:"hostnames"` // The hostnames of the jump server
+	Garlic    *onramp.Garlic
 }
 
 func (j *JumpServer) AddHostname(h *Hostname) {
@@ -27,13 +34,20 @@ type SearchResult struct {
 
 type SearchResults []*SearchResult
 
-func (j *JumpServer) Search(query string) []*Hostname {
-	var hosts []*Hostname
+func (j *JumpServer) Search(query string) SearchResults {
+	var results SearchResults
 	for _, host := range j.Hostnames {
 		registrar, text, tag, addr, hostname := host.FullSearch(query)
 		if registrar || text || tag || addr || hostname {
-			hosts = append(hosts, host)
+			results = append(results, &SearchResult{
+				Hostname:  host,
+				Registrar: registrar,
+				Text:      text,
+				Tag:       tag,
+				Addr:      addr,
+				Host:      hostname,
+			})
 		}
 	}
-	return hosts
+	return results
 }
