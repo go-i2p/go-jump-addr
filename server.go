@@ -9,6 +9,7 @@ type JumpServer struct {
 	*gohtmlmetadata.Extractor
 	Index     string      `json:"index"`     // The intro page/index page content of the jump server
 	Hostnames []*Hostname `json:"hostnames"` // The hostnames of the jump server
+	SyncURLs  []string    `json:"syncurls"`  // The URLs to sync the hostnames of the jump server with
 	Garlic    *onramp.Garlic
 }
 

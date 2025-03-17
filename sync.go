@@ -1,6 +1,7 @@
 package jumpserver
 
 import (
+	"context"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,7 +12,25 @@ import (
 	"github.com/go-i2p/i2pkeys"
 )
 
-func (j *JumpServer) SyncHostnames(u string) (host string, content string) {
+func (j *JumpServer) StartSync(urls []string, ctx context.Context) {
+	ticker := time.NewTicker(1 * time.Hour)
+	defer ticker.Stop()
+
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				for _, url := range urls {
+					j.syncHostnames(url)
+				}
+			}
+		}
+	}()
+}
+
+func (j *JumpServer) syncHostnames(u string) (host, content string) {
 	uri, err := url.Parse(u)
 	if err != nil {
 		log.Printf("Failed to parse URL: %s\n", err)

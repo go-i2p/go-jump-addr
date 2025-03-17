@@ -1,6 +1,7 @@
 package jumpserver
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"strings"
@@ -14,11 +15,33 @@ func (j *JumpServer) Serve() error {
 	}
 	log.Printf("Listening on %s\n", l.Addr())
 	defer l.Close()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	j.AutoUpdateMetadata(ctx)
+	j.StartSync(j.SyncURLs, ctx)
 	return http.Serve(l, j)
 }
 
 func (j *JumpServer) Close() error {
 	return j.Garlic.Close()
+}
+
+func (j *JumpServer) AutoUpdateMetadata(ctx context.Context) {
+	ticker := time.NewTicker(1 * time.Hour)
+	defer ticker.Stop()
+
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				if err := j.updateMetadata(); err != nil {
+					log.Printf("Error updating metadata: %v", err)
+				}
+			}
+		}
+	}()
 }
 
 func (j *JumpServer) updateMetadata() error {
