@@ -3,7 +3,7 @@ module github.com/go-i2p/go-jump-addr
 go 1.23.5
 
 require (
-	github.com/go-i2p/go-html-metadata v0.0.0-20250317212452-f3924bc6702f
+	github.com/go-i2p/go-html-metadata v0.0.0-20250317213951-0f170a174729
 	github.com/go-i2p/i2pkeys v0.33.92
 	github.com/go-i2p/onramp v0.33.92
 )
@@ -17,4 +17,4 @@ require (
 	golang.org/x/sys v0.31.0 // indirect
 )
 
-replace github.com/go-i2p/go-html-metadata => ../go-html-metadata
+//replace github.com/go-i2p/go-html-metadata => ../go-html-metadata
