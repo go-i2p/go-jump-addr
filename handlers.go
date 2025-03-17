@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"path/filepath"
 	"time"
+
+	"github.com/go-i2p/i2pkeys"
 )
 
 var templates *template.Template
@@ -26,6 +28,9 @@ func (j *JumpServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	case "/add", "/add.html":
 		j.handleAdd(w, r)
+	case "/all-hosts.txt":
+		w.Header().Set("Content-Type", "text/plain")
+		w.Write([]byte(j.HostsFile()))
 	case "/static/style.css":
 		http.ServeFile(w, r, filepath.Join("static", "style.css"))
 	case "/static/script.js":
@@ -67,7 +72,7 @@ func (j *JumpServer) handleAdd(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Parse I2P address
-		addr, err := i2pkeys.DecodeFromString(destination)
+		addr, err := i2pkeys.NewI2PAddrFromString(destination)
 		if err != nil {
 			http.Error(w, "Invalid I2P destination", http.StatusBadRequest)
 			return
@@ -75,7 +80,7 @@ func (j *JumpServer) handleAdd(w http.ResponseWriter, r *http.Request) {
 
 		// Create new hostname entry
 		host := &Hostname{
-			I2PAddr: addr,
+			I2PAddr: &addr,
 			Time:    time.Now(),
 			Registrant: Registrant{
 				Type:        regType,
@@ -95,4 +100,12 @@ func (j *JumpServer) handleAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
+func (j *JumpServer) HostsFile() string {
+	var hosts string
+	for _, host := range j.Hostnames {
+		hosts += host.Hostname + "=" + host.Base64() + "\n"
+	}
+	return hosts
 }
