@@ -1,6 +1,7 @@
 package jumpserver
 
 import (
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -11,6 +12,7 @@ func (j *JumpServer) Serve() error {
 	if err != nil {
 		return err
 	}
+	log.Printf("Listening on %s\n", l.Addr())
 	defer l.Close()
 	return http.Serve(l, j)
 }
