@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - I2P Jump Server</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Search I2P Jump Server</h1>
+    </header>
+    <div id="index-links">
+        <a href="/add">Add Host</a>
+        <a href="/search">Search</a>
+        <a href="/">Home</a>
+    </div>
+    <main>
+        <section id="search-form">
+            <form method="GET" action="/search">
+                <div class="form-group">
+                    <label for="q">Search Query:</label>
+                    <input type="text" id="q" name="q" value="{{.Query}}" 
+                           placeholder="Enter search terms...">
+                </div>
+
+                <div class="form-group">
+                    <label for="field">Search In:</label>
+                    <select id="field" name="field">
+                        <option value="all" {{if eq .Field "all"}}selected{{end}}>All Fields</option>
+                        <option value="hostname" {{if eq .Field "hostname"}}selected{{end}}>Hostname</option>
+                        <option value="address" {{if eq .Field "address"}}selected{{end}}>I2P Address</option>
+                        <option value="registrant" {{if eq .Field "registrant"}}selected{{end}}>Registrant</option>
+                        <option value="description" {{if eq .Field "description"}}selected{{end}}>Description</option>
+                        <option value="tags" {{if eq .Field "tags"}}selected{{end}}>Tags</option>
+                    </select>
+                </div>
+
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
+        {{if .Results}}
+        <section id="search-results">
+            <h2>Search Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hostname</th>
+                        <th>Address</th>
+                        <th>Type</th>
+                        <th>Registrant</th>
+                        <th>Description</th>
+                        <th>Tags</th>
+                        <th>Match Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Results}}
+                    <tr>
+                        <td>{{.Hostname.Hostname}}</td>
+                        <td>{{.Hostname.I2PAddr.Base32}}</td>
+                        <td>{{.Hostname.Registrant.Type}}</td>
+                        <td>{{.Hostname.Registrant.Name}}</td>
+                        <td>{{.Hostname.Registrant.Description}}</td>
+                        <td>
+                            {{range .Hostname.Registrant.Tags}}
+                            <span class="tag">{{.}}</span>
+                            {{end}}
+                        </td>
+                        <td>
+                            {{if .Host}}Hostname{{end}}
+                            {{if .Addr}}Address{{end}}
+                            {{if .Registrar}}Registrant{{end}}
+                            {{if .Text}}Description{{end}}
+                            {{if .Tag}}Tags{{end}}
+                        </td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </section>
+        {{else if .Query}}
+        <p>No results found for "{{.Query}}"</p>
+        {{end}}
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
